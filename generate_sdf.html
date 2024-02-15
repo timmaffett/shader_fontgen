@@ -16,6 +16,61 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 	  <input type="text" id="alernateFontName" placeholder="Enter Font Name">
 	  <button onclick="regenerateTheImageWithFontFromTextBox()">Regenerate with specified font</button>
 	<br/>
+  <select id="qualitySelector">
+    <option value="low" selected>Fast / Low Quality</option>
+    <option value="medium">Slow / Medium Quality</option>
+    <option value="high">Very Slow / High Quality</option>
+  </select>
+  (High Quality could take hours!)
+  <br/>
+  <br/>
+  Google Font Controls:
+
+  <script>
+    const qualitySelector = document.getElementById('qualitySelector');
+    qualitySelector.addEventListener('change', (event) => {
+      const selectedQuality = event.target.value;
+      changeQuality(selectedQuality);
+    });
+
+    function changeQuality(quality) {
+      if(quality=='low') {
+        sourceSize = 64 | 0;
+        divisions = 1.0;
+        downSamples = 0;
+        gradPrecision = 1 | 0;
+
+        cellSize = 64 | 0;
+        targetSize = 1024 | 0;
+
+        tileCount = (targetSize / cellSize) | 0;
+      } else if(quality=='medium') {
+        sourceSize = 64 | 0;
+        divisions = 2.0;
+        downSamples = 1;
+        gradPrecision = 2 | 0;
+
+        cellSize = 64 | 0;
+        targetSize = 1024 | 0;
+
+        tileCount = (targetSize / cellSize) | 0;
+      } else {
+        // 2048, div 4.0, 3 downsamples, gradPrecision 8
+        sourceSize = 64 | 0;
+        divisions = 4.0;
+        downSamples = 3;
+        gradPrecision = 8 | 0;
+
+        cellSize = 64 | 0;
+        targetSize = 2048 | 0;
+
+        tileCount = (targetSize / cellSize) | 0;
+      }
+      console.log("Selected quality:", quality);
+    }
+  </script>
+  <br/>
+
     <script type="text/javascript">
 	function appendMessageDiv(message) {
 	  const newDiv = document.createElement('div');
