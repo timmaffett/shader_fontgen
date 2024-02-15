@@ -17,10 +17,11 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 	  <button onclick="regenerateTheImageWithFontFromTextBox()">Regenerate with specified font</button>
 	<br/>
   <select id="qualitySelector">
-    <option value="low" selected>Fast / Low Quality</option>
-    <option value="medium">Slow / Medium Quality</option>
-    <option value="mediumhigh">Slower / Medium High Quality</option>
-    <option value="high">Very Slow / High Quality</option>
+    <option value="low" selected>Fast / Low Quality (1024x1024 texture)</option>
+    <option value="medium">Slow / Medium Quality (1024x1024 texture)</option>
+    <option value="mediumhigh">Slower / Medium High Quality (2028x2048 texture)</option>
+    <option value="high">Very Slow / High Quality (2048x2048 texture)</option>
+    <option value="high1024">Very Slow / High Quality 1024x1024 texture)</option>
   </select>
   (High Quality could take hours!)
   <br/>
@@ -56,10 +57,23 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 
         tileCount = (targetSize / cellSize) | 0;
       } else if(quality=='mediumhigh') {  // i made this up
-        sourceSize = 64*2*2 | 0;
+        sourceSize = 64*2*2*2 | 0; // one *2 for every down sample and additional one for cellsize 64->128
         divisions = 3.0;
         downSamples = 2;
         gradPrecision = 4 | 0;
+
+        cellSize = 128 | 0;
+        targetSize = 2048 | 0;
+
+        tileCount = (targetSize / cellSize) | 0;
+      } else if(quality=='high1024') {  // i made this up
+        // otaviogood's settings for high when he generated sdf font for shadertoy:
+        //  shadertoy texture is 1024x1024
+        // 2048, div 4.0, 3 downsamples, gradPrecision 8
+        sourceSize = 64*2*2*2 | 0; // one *2 for every down sample
+        divisions = 4.0;
+        downSamples = 3;
+        gradPrecision = 8 | 0;
 
         cellSize = 64 | 0;
         targetSize = 1024 | 0;
@@ -67,13 +81,14 @@ To the extent possible under law, the author(s) have dedicated all copyright and
         tileCount = (targetSize / cellSize) | 0;
       } else {
         // otaviogood's settings for high when he generated sdf font for shadertoy:
+        //  (BUT not exaclty this because shadertoy texture is 1024x1024
         // 2048, div 4.0, 3 downsamples, gradPrecision 8
-        sourceSize = 64*2*2*2 | 0;
+        sourceSize = 64*2*2*2*2 | 0; // one *2 for every down sample and additional one for cellsize 64->128
         divisions = 4.0;
         downSamples = 3;
         gradPrecision = 8 | 0;
 
-        cellSize = 64 | 0;
+        cellSize = 128 | 0;
         targetSize = 2048 | 0;
 
         tileCount = (targetSize / cellSize) | 0;
