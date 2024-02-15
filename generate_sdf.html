@@ -736,16 +736,6 @@ async function fetchFonts(category) {
   }
 }
 
-// Function to fetch monospaced Google Fonts
-async function fetchMonospacedFonts() {
-  //const url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${googleFontsAPIKey}`;
-  //const response = await fetch(url);
-  //const data = await response.json();
-  await fetchInitialFontInfo();
-  const monospacedFonts = webFontResponseData.items.filter(font => font.category === 'monospace');
-  return monospacedFonts;
-}
-
 // Function to create the category dropdown menu
 function createCategoryDropdown() {
   const select = document.createElement('select');
