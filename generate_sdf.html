@@ -711,8 +711,7 @@ DONT AUTOGENERATE */
     </script>
 	
 <script type="text/javascript">
-  // This api key will only work from https://timmaffett.github.io/shadertoy_fontgen/generate_sdf.html
-	const googleFontsAPIKey = 'AIzaSyBLykzaVrB2C57zINR3-1nbnbLzWnUp2sM'; // Replace with your actual Google Fonts API key
+// This api key will only work from https://timmaffett.github.io/shadertoy_fontgen/generate_sdf.html
 const categories = ['all', 'monospace', 'sans-serif', 'serif', 'display', 'handwritten'];
 const exampleText = "This is an example text.";
 
@@ -720,7 +719,7 @@ var webFontResponse = undefined;
 var webFontResponseData = undefined;
 async function fetchInitialFontInfo() {
   if(webFontResponse==undefined) {
-	const url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${googleFontsAPIKey}`;
+	const url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyBLykzaVrB2C57zINR3-1nbnbLzWnUp2sM`;
 	webFontResponse = await fetch(url);
 	webFontResponseData = await webFontResponse.json();
   }
@@ -728,13 +727,6 @@ async function fetchInitialFontInfo() {
 
 // Function to fetch Google Fonts based on category
 async function fetchFonts(category) {
-  //var url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${googleFontsAPIKey}`;
-  //if (category !== 'all') {
-  //  url += `&category=${category}`;
-  //}
-  //const response = await fetch(url);
-  //const data = await response.json();
-  //return data.items;
   await fetchInitialFontInfo();
   if (category !== 'all') {
 	  const categoryFonts = webFontResponseData.items.filter(font => font.category === category);
