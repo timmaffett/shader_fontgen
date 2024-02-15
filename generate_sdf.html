@@ -19,6 +19,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
   <select id="qualitySelector">
     <option value="low" selected>Fast / Low Quality</option>
     <option value="medium">Slow / Medium Quality</option>
+    <option value="mediumhigh">Slower / Medium High Quality</option>
     <option value="high">Very Slow / High Quality</option>
   </select>
   (High Quality could take hours!)
@@ -44,8 +45,8 @@ To the extent possible under law, the author(s) have dedicated all copyright and
         targetSize = 1024 | 0;
 
         tileCount = (targetSize / cellSize) | 0;
-      } else if(quality=='medium') {
-        sourceSize = 64 | 0;
+      } else if(quality=='medium') { // i made this up
+        sourceSize = 64*2 | 0;
         divisions = 2.0;
         downSamples = 1;
         gradPrecision = 2 | 0;
@@ -54,9 +55,20 @@ To the extent possible under law, the author(s) have dedicated all copyright and
         targetSize = 1024 | 0;
 
         tileCount = (targetSize / cellSize) | 0;
+      } else if(quality=='mediumhigh') {  // i made this up
+        sourceSize = 64*2*2 | 0;
+        divisions = 3.0;
+        downSamples = 2;
+        gradPrecision = 4 | 0;
+
+        cellSize = 64 | 0;
+        targetSize = 1024 | 0;
+
+        tileCount = (targetSize / cellSize) | 0;
       } else {
+        // otaviogood's settings for high when he generated sdf font for shadertoy:
         // 2048, div 4.0, 3 downsamples, gradPrecision 8
-        sourceSize = 64 | 0;
+        sourceSize = 64*2*2*2 | 0;
         divisions = 4.0;
         downSamples = 3;
         gradPrecision = 8 | 0;
@@ -104,7 +116,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 	}
 
 	function regenerateTheImageWithFontFromTextBox() {
-	  const altFont = document.getElementById("alernateFontName").value;
+	  var altFont = document.getElementById("alernateFontName").value;
 	  console.log('Regenerating with alternate font '+altFont);
 	  if(altFont=='') altFont=undefined;
 	  appendMessageDiv('Shadertoy SDF Image for font "'+altFont+'"');
@@ -142,7 +154,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
       var finalImage;
       function createTextCanvas(color, font) {
         var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
         finalImage = ctx.createImageData(targetSize, targetSize);
         var fontStrA = 'bold ' + ((sourceSize * 0.9218) + 'px ') + (font || 'Helvetica');
         var fontStrB = 'bold ' + ((sourceSize * 0.78125) + 'px ') + (font || 'Noto mono');
@@ -192,6 +204,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
             ctx.fillRect(0, 0, sourceSize, sourceSize);
             ctx.fillStyle = color || 'white';
             ctx.fillText(text, posx, posy);
+            
 
             // ----------------------------------------------------------
             newImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -205,8 +218,13 @@ To the extent possible under law, the author(s) have dedicated all copyright and
               }
             }
             for (var i = 0; i < downSamples; i++) {
-              DownSampleF2();
-              newImg = DownSample(newImg, ctx);
+              console.log(`Downsample loop i=${i}`);
+              //if(widthF2>1) {
+                DownSampleF2();
+                //if(newImg.width>1) {
+                  newImg = DownSample(newImg, ctx);
+                //}
+              //}
             }
 
             bufferF = new Float32Array(newImg.width * newImg.height);
@@ -246,7 +264,9 @@ To the extent possible under law, the author(s) have dedicated all copyright and
             }
             CopyInToA(newImg);
 
+            //while (newImg.width > cellSize && newImg.width != cellSize) {
             while (newImg.width != cellSize) {
+              //console.log(`While newImg.width (${newImg.width}) != cellSize (${cellSize})`);
               newImg = DownSample(newImg, ctx);
             }
             CopyToFinal(finalImage, newImg, x, y);
@@ -343,6 +363,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
       function DownSample(imageData, ctx) {
         var w2 = (imageData.width / 2) | 0;
         var h2 = (imageData.height / 2) | 0;
+        console.log(`DownSample() imageData.width=${w2} imageData.height=${h2}`);
         // var buf2 = new Uint8ClampedArray(w2 * h2);
         var buf2 = ctx.createImageData(w2, h2);
         for (var y = 0; y < h2; y++) {
