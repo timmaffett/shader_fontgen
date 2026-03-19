@@ -25,6 +25,8 @@ To the extent possible under law, the author(s) have dedicated all copyright and
   </select>
   (High Quality could take hours!)
   <br/>
+  <input type="checkbox" id="centerChars"><label for="centerChars">Center characters in cell (recommended for non-monospaced fonts)</label>
+  <br/>
   <br/>
   Google Font Controls:
 
@@ -212,7 +214,8 @@ To the extent possible under law, the author(s) have dedicated all copyright and
               // posy -= sourceSize * 0.046875;
             }
             mw = ctx.measureText(text).width;
-            if (y <= 1) posx = (sourceSize-mw) / 2;  // Center symbols
+            var centerChars = document.getElementById('centerChars').checked;
+            if (y <= 1 || centerChars) posx = (sourceSize-mw) / 2;  // Center symbols (and all chars if checkbox checked)
             if ((y==1) && (x==13)) posx += sourceSize * 0.046875;
             //ctx.fillStyle = color || 'black';
             ctx.fillStyle="#000000";
@@ -858,7 +861,7 @@ async function createFontDropdown(fonts) {
   defaultOption.textContent = 'Select a font';
   select.appendChild(defaultOption);
 
-  fonts.forEach(font => {
+  fonts.sort((a, b) => a.family.localeCompare(b.family)).forEach(font => {
     const option = document.createElement('option');
     option.value = font.family;
     option.textContent = font.family;
@@ -883,7 +886,7 @@ function updateFontDropdown(fonts) {
   defaultOption.textContent = 'Select a font';
   fontDropdown.appendChild(defaultOption);
 
-  fonts.forEach(font => {
+  fonts.sort((a, b) => a.family.localeCompare(b.family)).forEach(font => {
     const option = document.createElement('option');
     option.value = font.family;
     option.textContent = font.family;
